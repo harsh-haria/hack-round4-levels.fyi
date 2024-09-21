@@ -1,5 +1,7 @@
 let moves = require("./moves");
 
+const DEPTH = 5;
+
 let fakeStorage = {
     _data: {},
 
@@ -560,7 +562,7 @@ class SmartAI {
         // Plan ahead a few moves in every direction and analyze the board state.
         // Go for moves that put the board in a better state.
         let originalQuality = this.gridQuality(this.game.grid);
-        let results = this.planAhead(this.game.grid, 4, originalQuality);
+        let results = this.planAhead(this.game.grid, DEPTH, originalQuality);
         // Choose the best result
         let bestResult = this.chooseBestMove(results, originalQuality);
         // console.log("Score: ", this.game.score);
