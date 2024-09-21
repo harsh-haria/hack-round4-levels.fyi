@@ -1,7 +1,6 @@
 let moves = require("./moves");
 
-const DEPTH = 5;
-
+const DEPTH = process.env.DEPTH;
 let fakeStorage = {
     _data: {},
 
