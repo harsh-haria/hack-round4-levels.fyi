@@ -853,47 +853,58 @@ function addRandomTile(grid) {
 //     [null, null, null, null]
 // ];
 
+function testBestMoveFunction() {
+    let input = [
+        [2, 0, 0, 0],
+        [0, 0, 0, 2],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0]
+    ]
+    // let input = [
+    //     [4, 128, 16, 4],
+    //     [2, 32, 8, 2],
+    //     [16, 64, 4, 16],
+    //     [8, 16, 2, 4]
+    // ]
 
-let input = [
-    [2, 0, 0, 0],
-    [0, 0, 0, 2],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0]
-]
-// let input = [
-//     [4, 128, 16, 4],
-//     [2, 32, 8, 2],
-//     [16, 64, 4, 16],
-//     [8, 16, 2, 4]
-// ]
+    // call
+    let limit = 100;
+    while (limit--) {
+        let currentState = molder(input);
+        printer(input);
+        let storageManager = new LocalStorageManager();
+        storageManager.setGameState({ grid: { size: 4, cells: currentState }, score: 0, over: 0 });
 
-// call
-let limit = 100;
-while (limit--) {
+        let gameManager = new GameManager(4, null, null, storageManager);
+        let smartAI = new SmartAI(gameManager);
+        let output = smartAI.nextMove();
+        console.log("Best Move: " + output + "\n");
+        if (output == 0) {
+            input = moves.moveUp(input);
+        }
+        else if (output == 1) {
+            input = moves.moveRight(input)
+        }
+        else if (output == 2) {
+            input = moves.moveDown(input);
+        }
+        else if (output == 3) {
+            input = moves.moveLeft(input);
+        }
+        else {
+            console.log("Output was not a direction. Output: " + output);
+            break;
+        }
+        input = addRandomTile(input);
+    }
+}
+
+exports.GetBestMove = (input) => {
     let currentState = molder(input);
-    printer(input);
     let storageManager = new LocalStorageManager();
     storageManager.setGameState({ grid: { size: 4, cells: currentState }, score: 0, over: 0 });
-
     let gameManager = new GameManager(4, null, null, storageManager);
     let smartAI = new SmartAI(gameManager);
     let output = smartAI.nextMove();
-    console.log("Best Move: " + output + "\n");
-    if (output == 0) {
-        input = moves.moveUp(input);
-    }
-    else if (output == 1) {
-        input = moves.moveRight(input)
-    }
-    else if (output == 2) {
-        input = moves.moveDown(input);
-    }
-    else if (output == 3) {
-        input = moves.moveLeft(input);
-    }
-    else {
-        console.log("Output was not a direction. Output: " + output);
-        break;
-    }
-    input = addRandomTile(input);
+    return output;
 }

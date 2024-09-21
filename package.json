@@ -1,0 +1,26 @@
+{
+  "name": "y",
+  "version": "1.0.0",
+  "description": "levels.fyi hackathon round 4",
+  "main": "api.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/harsh-haria/hack-round4-levels.fyi.git"
+  },
+  "keywords": [
+    "levels.fyi"
+  ],
+  "author": "harsh haria",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/harsh-haria/hack-round4-levels.fyi/issues"
+  },
+  "homepage": "https://github.com/harsh-haria/hack-round4-levels.fyi#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.0"
+  }
+}

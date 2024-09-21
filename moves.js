@@ -1,7 +1,3 @@
-// moves.js
-
-const { cloneGrid } = require('./grid');
-
 function slide(row) {
     const arr = row.filter(val => val);
     const missing = 4 - arr.length;
