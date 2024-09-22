@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 5000;
 
 const app = express();
 
@@ -25,8 +25,13 @@ app.use('/', (req, res) => {
         let col = Math.floor(i / 4);
         result[row][col] = arrayElements[i];
     }
-
-    let output = indexFunctions.GetBestMove(result);
+    let output = 0;
+    try {
+        output = indexFunctions.GetBestMove(result);
+    } catch (error) {
+        console.log('error while getting the best direction for the game.');
+        return res.send("" + output);
+    }
 
     return res.send("" + output);
 });

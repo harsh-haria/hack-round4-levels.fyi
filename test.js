@@ -1,6 +1,6 @@
 let moves = require("./moves");
 
-let DEPTH = process.env.DEPTH || 5;
+const DEPTH = process.env.DEPTH || 5;
 let fakeStorage = {
     _data: {},
 
@@ -369,13 +369,19 @@ class GameController {
 
 
 class GameManager extends GameController {
-    constructor(size, StorageManager) {
+    constructor(size, InputManager, Actuator, StorageManager) {
         super(new Grid(size));
         this.size = size; // Size of the grid
         this.storageManager = StorageManager;
+        // this.inputManager = new InputManager;
+        // this.actuator = new Actuator;
 
         this.startTiles = 2;
         this.lastDirection = 0;
+
+        // this.inputManager.on("move", this.move.bind(this));
+        // this.inputManager.on("restart", this.restart.bind(this));
+        // this.inputManager.game = this;
 
         this.setup();
     }
@@ -848,12 +854,31 @@ function addRandomTile(grid) {
 //     [null, null, null, null]
 // ];
 
+function printTileGrid(grid) {
+    if (!grid.grid.cells) {
+        console.log(grid);
+    }
+    grid = grid.grid.cells;
+    for (let i = 0; i < 4; i++) {
+        let string = "";
+        for (let j = 0; j < 4; j++) {
+            if (grid[i][j]) {
+                string += grid[i][j].value + ' ';
+            }
+            else {
+                string += '0 ';
+            }
+        }
+        console.log(string);
+    }
+}
+
 function testBestMoveFunction() {
     let input = [
-        [2, 0, 0, 0],
+        [0, 0, 0, 0],
         [0, 0, 0, 2],
         [0, 0, 0, 0],
-        [0, 0, 0, 0]
+        [2, 0, 0, 0]
     ]
     // let input = [
     //     [4, 128, 16, 4],
@@ -861,49 +886,62 @@ function testBestMoveFunction() {
     //     [16, 64, 4, 16],
     //     [8, 16, 2, 4]
     // ]
+    input = [
+        [2, 4, 8, 128],
+        [0, 4, 16, 256],
+        [0, 0, 32, 1024],
+        [0, 0, 64, 2048]
+    ]
 
     // call
-    let limit = 100;
-    while (limit--) {
-        let currentState = molder(input);
-        printer(input);
-        let storageManager = new LocalStorageManager();
-        storageManager.setGameState({ grid: { size: 4, cells: currentState }, score: 0, over: 0 });
-
-        let gameManager = new GameManager(4, null, null, storageManager);
-        let smartAI = new SmartAI(gameManager);
-        let output = smartAI.nextMove();
-        console.log("Best Move: " + output + "\n");
-        if (output == 0) {
-            input = moves.moveUp(input);
-        }
-        else if (output == 1) {
-            input = moves.moveRight(input)
-        }
-        else if (output == 2) {
-            input = moves.moveDown(input);
-        }
-        else if (output == 3) {
-            input = moves.moveLeft(input);
-        }
-        else {
-            console.log("Output was not a direction. Output: " + output);
-            break;
-        }
-        input = addRandomTile(input);
-    }
-}
-
-exports.GetBestMove = (input) => {
     let currentState = molder(input);
+    // printer(input);
     let storageManager = new LocalStorageManager();
     storageManager.setGameState({ grid: { size: 4, cells: currentState }, score: 0, over: 0 });
-    let gameManager = new GameManager(4, storageManager);
+
+    let gameManager = new GameManager(4, null, null, storageManager);
     let smartAI = new SmartAI(gameManager);
-    if (gameManager.isGameTerminated()) {
-        console.log("game terminated");
-        return 0;
+
+    let limit = 10000;
+    let it = 1;
+    while (it <= limit) {
+        if (gameManager.isGameTerminated()) {
+            console.log("game terminated");
+            break;
+        }
+        if (it == 1) {
+            printer(input);
+        }
+        let output = smartAI.nextMove();
+        console.log(`Iteration: ${it} Best Move: ${output}. Best Score before move: ${storageManager.getBestScore()} \n`);
+        printTileGrid(storageManager.getGameState())
+        gameManager.move(output);
+        // if (output == 0) {
+        //     input = moves.moveUp(input);
+        // }
+        // else if (output == 1) {
+        //     input = moves.moveRight(input)
+        // }
+        // else if (output == 2) {
+        //     input = moves.moveDown(input);
+        // }
+        // else if (output == 3) {
+        //     input = moves.moveLeft(input);
+        // }
+        // else {
+        //     console.log("Output was not a direction. Output: " + output);
+        //     break;
+        // }
+        // input = addRandomTile(input);
+        // let newState = molder(input);
+        // printTileGrid
+        // storageManager.setGameState({ grid: { size: 4, cells: newState }, score: 0, over: 0 });
+        it++;
+        // if (it > limit) {
+        //     printTileGrid(storageManager.getGameState())
+        // }
+        // gameManager.addRandomTile();
     }
-    let output = smartAI.nextMove();
-    return output;
 }
+
+testBestMoveFunction();
