@@ -894,7 +894,8 @@ function testBestMoveFunction() {
     }
 }
 
-exports.GetBestMove = (input) => {
+exports.GetBestMove = (input, depth) => {
+    DEPTH = depth;
     let currentState = molder(input);
     let storageManager = new LocalStorageManager();
     storageManager.setGameState({ grid: { size: 4, cells: currentState }, score: 0, over: 0 });
